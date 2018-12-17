@@ -200,6 +200,23 @@ describe('requester util', function () {
                 gamma: 'baz'
             });
         });
+
+        it('should handle case sensitive headers correctly', function () {
+            var request = new sdk.Request({
+                header: [
+                    {key: 'alpha', value: 'foo'},
+                    {key: 'ALPHA', value: 'bar', disabled: true},
+                    {key: 'Alpha', value: 'baz'},
+                    {key: 'ALPHA', value: 'next'},
+                    {key: 'AlPhA', value: 'other'},
+                    {key: 'aLpHa'}
+                ]
+            });
+
+            expect(requesterCore.getRequestHeaders(request)).to.eql({
+                alpha: ['foo', 'baz', 'next', 'other', '']
+            });
+        });
     });
 
     describe('.getRequestBody', function () {
